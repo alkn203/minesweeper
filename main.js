@@ -73,33 +73,10 @@ phina.define('MainScene', {
         };
       });
     });
-    // モード
-    this.mode = 'normal';
-    // マークモードボタン
-    Button({
-      width: 120,
-      height: 64,
-      text: 'Mark',
-      fill: 'silver',
-    }).addChildTo(this)
-      .setPosition(this.gridX.span(14), this.gridY.span(14.5))
-      .onpush = function() {
-        // モード変更
-        if (self.mode === 'normal') {
-          this.fill = 'hsl(160, 80%, 50%)';
-          self.mode = 'mark';
-        }
-        else {
-          this.fill = 'silver';
-          self.mode = 'normal';
-        }
-      };
     // 参照用
     this.panelGroup = panelGroup;
     // クリア判定用
     this.oCount = 0;
-    // マークの数
-    this.markCount = 0;
   },
   // クリア判定
   checkClear: function() {
@@ -148,16 +125,13 @@ phina.define('MainScene', {
       indexs.each(function(j) {
         var pos = Vector2(panel.x + i * GRID_SIZE, panel.y + j * GRID_SIZE);
         var target = self.getPanel(pos);
-        if (target && target.isBomb) bombs++;
+        if (target && target.isBomb) {
+          bombs++;
+        }
       });
     });
     // パネルに数を表示
     panel.num = bombs === 0 ? '' : bombs;
-    Label({
-      text: panel.num,
-      fill: 'white',
-    }).addChildTo(panel);
-    panel.fill = 'gray';
     // 周りに爆弾がなければ再帰的に調べる
     if (bombs === 0) {
       indexs.each(function(i) {
@@ -189,18 +163,6 @@ phina.define('MainScene', {
       panel.setInteractive(false);
       
       if (panel.isBomb) {
-        Bomb().addChildTo(panel);
-        panel.tweener.clear().scaleTo(1.2, 100)
-                     .scaleTo(1.0, 100)
-                     .call(function() {
-                       // ラベル表示
-                       Label({
-                        text: 'TOUCH TO RESTART',
-                        fill: 'white',
-                       }).addChildTo(self).setPosition(320, 700);
-                       // 画面をタッチ可能に
-                       self.setInteractive(true);
-                     });
       }
     });
   },
@@ -225,75 +187,6 @@ phina.define('Panel', {
       this.isMark = false;
       // タッチ有効化
       this.setInteractive(true);
-    },
-});
-// 爆弾クラス
-phina.define('Bomb', {
-  // Shapeを継承
-  superClass: 'Shape',
-    // コンストラクタ
-    init: function() {
-      // 親クラス初期化
-      this.superInit({
-        width: GRID_SIZE,
-        height: GRID_SIZE,
-        backgroundColor: 'transparent',
-      });
-      // 導線
-      RectangleShape({
-        width: PANEL_SIZE / 8,
-        height: PANEL_SIZE / 8,
-        fill: "navy",
-        stroke: 'white',
-        y: -20,
-      }).addChildTo(this);
-      // 本体
-      CircleShape({
-        radius: PANEL_SIZE / 4,
-        fill: "navy",
-        stroke: 'white',
-      }).addChildTo(this);
-    },
-});
-// 爆発クラス
-phina.define('Explosion', {
-  // StarShapeを継承
-  superClass: 'StarShape',
-    // コンストラクタ
-    init: function() {
-      // 親クラス初期化
-      this.superInit({
-        radius: (PANEL_SIZE + 5) / 2,
-        sides: 10,
-        sideIndent: 0.75,
-        rotation: 15,
-        fill: "red",
-        stroke: "yellow",
-      });
-    },
-});
-// マーククラス
-phina.define('Mark', {
-  // RectangleShapeを継承
-  superClass: 'RectangleShape',
-    // コンストラクタ
-    init: function() {
-      // 親クラス初期化
-      this.superInit({
-        width: PANEL_SIZE / 10,
-        height: PANEL_SIZE,
-        fill: "red",
-        stroke: "red",
-        rotation: 45,
-      });
-      
-      CircleShape({
-        width: PANEL_SIZE,
-        height: PANEL_SIZE,
-        fill: "transparent",
-        stroke: "red",
-        strokeWidth: PANEL_SIZE / 10,
-      }).addChildTo(this);
     },
 });
 // メイン

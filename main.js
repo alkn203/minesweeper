@@ -189,7 +189,6 @@ phina.define('Panel', {
       // タッチ有効化
       this.setInteractive(true);
       this.setFrameIndex(4);
-      this.setSize(PANEL_SIZE, PANEL_SIZE);
     },
 });
 // メイン

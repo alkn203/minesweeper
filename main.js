@@ -181,7 +181,7 @@ phina.define('Panel', {
     // コンストラクタ
     init: function() {
       // 親クラス初期化
-      this.superInit('minesheet', 16, 16);
+      this.superInit('minesheet', 64, 64);
       // 開かれているかどうか
       this.isOpen = false;
       // マークつけれているかどうか

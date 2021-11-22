@@ -7,6 +7,13 @@ var SCREEN_HEIGHT = GRID_SIZE * 11; // 画面縦サイズ
 var PANEL_SIZE = GRID_SIZE * 0.9; // パネルの大きさ
 var PANEL_OFFSET = (GRID_SIZE + 10) / 2; // オフセット値
 var BOMB_NUM = 10; // 爆弾数
+// アセット
+var ASSETS = {
+  // 画像
+  image: {
+    'minesheet': 'https://cdn.jsdelivr.net/gh/alkn203/minesweeper@main/assets/minesheet.png',
+  },
+};
 // メインシーン
 phina.define('MainScene', {
   superClass: 'DisplayScene',
@@ -169,24 +176,20 @@ phina.define('MainScene', {
 });
 // パネルクラス
 phina.define('Panel', {
-  // RectangleShapeを継承
-  superClass: 'RectangleShape',
+  // Spriteクラスを継承
+  superClass: 'Sprite',
     // コンストラクタ
     init: function() {
       // 親クラス初期化
-      this.superInit({
-        width: PANEL_SIZE,
-        height: PANEL_SIZE,
-        fill: 'silver', // 塗りつぶし色
-        stroke: 'white', // 枠の色
-        cornerRadius: 2, // 角の丸み
-      });
+      this.superInit('minesheet', 16, 16);
       // 開かれているかどうか
       this.isOpen = false;
       // マークつけれているかどうか
       this.isMark = false;
       // タッチ有効化
       this.setInteractive(true);
+      this.setFrameIndex(4);
+      this.setSize(PANEL_SIZE, PANEL_SIZE);
     },
 });
 // メイン
@@ -195,6 +198,8 @@ phina.main(function() {
     startLabel: 'main', // メイン画面からスタート
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
+    // アセット読み込み
+    assets: ASSETS,
   });
   app.run();
 });

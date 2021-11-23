@@ -1,35 +1,26 @@
 phina.globalize();
 // 定数
-var SCREEN_WIDTH = 640; // 画面横サイズ
+var PANEL_SIZE = 64; // パネルサイズ
 var PANEL_NUM_XY = 9; // 縦横のパネル数
-var GRID_SIZE = (SCREEN_WIDTH - 10) / PANEL_NUM_XY; // グリッドのサイズ
-var SCREEN_HEIGHT = GRID_SIZE * 11; // 画面縦サイズ
-var PANEL_SIZE = GRID_SIZE * 0.9; // パネルの大きさ
-var PANEL_OFFSET = (GRID_SIZE + 10) / 2; // オフセット値
+var SCREEN_SIZE = PANEL_SIZE * PANEL_NUM_XY; // 画面縦横サイズ
+var PANEL_OFFSET = PANEL_SIZE / 2; // オフセット値
 var BOMB_NUM = 10; // 爆弾数
 // アセット
 var ASSETS = {
   // 画像
   image: {
-    'minesheet': 'https://cdn.jsdelivr.net/gh/alkn203/minesweeper@main/assets/minesheet.png',
+    'minespsheet': 'https://cdn.jsdelivr.net/gh/alkn203/minesweeper@main/assets/minespsheet.png',
   },
 };
 // メインシーン
 phina.define('MainScene', {
   superClass: 'DisplayScene',
   // コンストラクタ
-  init: function() {
+  init: function(options) {
     // 親クラス初期化
-    this.superInit({
-      width: SCREEN_WIDTH,
-      height: SCREEN_HEIGHT,
-    });
-    // 背景色
-    this.backgroundColor = 'gray';
-    // タッチ不可に
-    this.setInteractive(false);
+    this.superInit(options);
     // グリッド
-    var grid = Grid(GRID_SIZE * PANEL_NUM_XY, PANEL_NUM_XY);
+    var grid = Grid(SCREEN_SIZE, PANEL_NUM_XY);
     // グループ
     var panelGroup = DisplayElement().addChildTo(this);
     // 爆弾位置をランダムに決めた配列を作成
@@ -181,22 +172,24 @@ phina.define('Panel', {
     // コンストラクタ
     init: function() {
       // 親クラス初期化
-      this.superInit('minesheet', 64, 64);
+      this.superInit('minespsheet', PANEL_SIZE, PANEL_SIZE);
       // 開かれているかどうか
       this.isOpen = false;
-      // マークつけれているかどうか
-      this.isMark = false;
       // タッチ有効化
       this.setInteractive(true);
-      this.setFrameIndex(4);
+      // 初期表示
+      this.setFrameIndex(10);
     },
 });
 // メイン
 phina.main(function() {
   var app = GameApp({
-    startLabel: 'main', // メイン画面からスタート
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    // メイン画面からスタート
+    startLabel: 'main', 
+    width: SCREEN_SIZE,
+    height: SCREEN_SIZE,
+    // ウィンドウにフィット
+    fit: false,
     // アセット読み込み
     assets: ASSETS,
   });

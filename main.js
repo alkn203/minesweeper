@@ -43,31 +43,10 @@ phina.define('MainScene', {
         panel.isBomb = bombs[spanX * PANEL_NUM_XY + spanY];
         // パネルタッチ時
         panel.onpointstart = function() {
-          // マークモードなら
-          if (self.mode === 'mark') {
-            if (!panel.isOpen && !panel.isMark) {
-              // マーク追加
-              if (self.markCount < BOMB_NUM) {
-                Mark().addChildTo(panel);
-                panel.isMark = true;
-                self.markCount++;
-              }
-            }
-            else {
-              if (self.markCount > 0) {
-                // マーク削除
-                panel.children[0].remove();
-                panel.isMark = false;
-                self.markCount--;
-              }
-            }
-          }
-          else {
-            // パネルを開く
-            self.openPanel(panel);
-            // クリア判定
-            self.checkClear();
-          }
+          // パネルを開く
+          self.openPanel(panel);
+          // クリア判定
+          self.checkClear();
         };
       });
     });
@@ -79,28 +58,14 @@ phina.define('MainScene', {
   // クリア判定
   checkClear: function() {
     if (this.oCount === PANEL_NUM_XY * PANEL_NUM_XY - BOMB_NUM) {
-      // ラベル表示
-      Label({
-        text: 'GOOD JOB!',
-        fill: 'white',
-      }).addChildTo(this).setPosition(320, 700);
       // パネルを選択不可に
       this.panelGroup.children.each(function(panel) {
         panel.setInteractive(false);
       });
     }
   },
-  // 画面タッチ可能な場合
-  onpointstart: function() {
-    // 再スタート
-    this.exit({
-      nextLabel: 'main',  
-    });  
-  },
   // パネルを開く処理
   openPanel: function(panel) {
-    // マークされていた何もしない
-    if (panel.isMark) return;
     // 爆弾ならゲームオーバー
     if (panel.isBomb) {
       Explosion().addChildTo(panel);
@@ -121,7 +86,7 @@ phina.define('MainScene', {
     // 周りのパネルの爆弾数をカウント
     indexs.each(function(i) {
       indexs.each(function(j) {
-        var pos = Vector2(panel.x + i * GRID_SIZE, panel.y + j * GRID_SIZE);
+        var pos = Vector2(panel.x + i * PANEL_SIZE, panel.y + j * PANEL_SIZE);
         var target = self.getPanel(pos);
         if (target && target.isBomb) {
           bombs++;
@@ -134,7 +99,7 @@ phina.define('MainScene', {
     if (bombs === 0) {
       indexs.each(function(i) {
         indexs.each(function(j) {
-          var pos = Vector2(panel.x + i * GRID_SIZE, panel.y + j * GRID_SIZE);
+          var pos = Vector2(panel.x + i * PANEL_SIZE, panel.y + j * PANEL_SIZE);
           var target = self.getPanel(pos);
           target && self.openPanel(target);
         });

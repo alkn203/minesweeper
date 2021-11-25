@@ -5,6 +5,9 @@ var PANEL_NUM_XY = 9; // 縦横のパネル数
 var SCREEN_SIZE = PANEL_SIZE * PANEL_NUM_XY; // 画面縦横サイズ
 var PANEL_OFFSET = PANEL_SIZE / 2; // オフセット値
 var BOMB_NUM = 10; // 爆弾数
+var PANEL_FRAME = 10; // 初期パネルのフレームインデックス 
+var BOMB_FRAME = 11; // 爆弾のフレームインデックス 
+var EXP_FRAME = 12; // 爆弾爆発のフレームインデックス 
 // アセット
 var ASSETS = {
   // 画像
@@ -66,13 +69,13 @@ phina.define('MainScene', {
   },
   // パネルを開く処理
   openPanel: function(panel) {
-    // 爆弾ならゲームオーバー
+    // 爆弾
     if (panel.isBomb) {
-      Explosion().addChildTo(panel);
+      panel.setFrameIndex(EXP_FRAME);
       this.showAllBombs();
       return;
     }
-    // 既に開かれていた何もしない
+    // 既に開かれていたら何もしない
     if (panel.isOpen) return;
     // 開いたとフラグを立てる
     panel.isOpen = true;
@@ -129,7 +132,8 @@ phina.define('MainScene', {
     this.panelGroup.children.each(function(panel) {
       panel.setInteractive(false);
       
-      if (panel.isBomb) {
+      if (panel.isBomb && panel.frameIndex === PANEL_FRAME) {
+        panel.setFrameIndex(BOMB_FRAME);
       }
     });
   },
@@ -147,7 +151,7 @@ phina.define('Panel', {
       // タッチ有効化
       this.setInteractive(true);
       // 初期表示
-      this.setFrameIndex(10);
+      this.setFrameIndex(PANEL_FRAME);
     },
 });
 // メイン

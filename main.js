@@ -86,32 +86,36 @@ phina.define('MainScene', {
     // 周りのパネルの爆弾数をカウント
     indexs.each(function(i) {
       indexs.each(function(j) {
-        var pos = Vector2(panel.x + i * PANEL_SIZE, panel.y + j * PANEL_SIZE);
-        var target = self.getPanel(pos);
+        var x = panel.x + i * PANEL_SIZE;
+        var y = panel.y + j * PANEL_SIZE;
+        var target = self.getPanel(x, y);
         if (target && target.isBomb) {
           bombs++;
         }
       });
     });
     // パネルに数を表示
-    panel.num = bombs === 0 ? '' : bombs;
+    panel.setFrameIndex(bombs);
     // 周りに爆弾がなければ再帰的に調べる
     if (bombs === 0) {
       indexs.each(function(i) {
         indexs.each(function(j) {
-          var pos = Vector2(panel.x + i * PANEL_SIZE, panel.y + j * PANEL_SIZE);
-          var target = self.getPanel(pos);
-          target && self.openPanel(target);
+          var x = panel.x + i * PANEL_SIZE;
+          var y = panel.y + j * PANEL_SIZE;
+          var target = self.getPanel(x, y);
+          if (target) {
+            self.openPanel(target);
+          }
         });
       });
     }
   },
   // 指定された位置のパネルを得る
-  getPanel: function(pos) {
+  getPanel: function(x, y) {
     var result = null;
     
     this.panelGroup.children.some(function(panel) {
-      if (panel.position.equals(pos)) {
+      if (panel.x === x && panel.y === y) {
         result = panel;
         return true;
       } 

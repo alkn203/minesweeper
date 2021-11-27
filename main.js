@@ -162,7 +162,7 @@ phina.main(function() {
     width: SCREEN_SIZE,
     height: SCREEN_SIZE,
     // ウィンドウにフィット
-    fit: false,
+    //fit: false,
     // アセット読み込み
     assets: ASSETS,
   });
